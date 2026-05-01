@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>სერტიფიკატი · შორენა ფანცულაია</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Georgian:wght@400;500;600;700;800;900&family=Noto+Sans+Georgian:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* paper */
+  --paper-1:#f7ead0;
+  --paper-2:#f0dcb0;
+  --paper-3:#ead29a;
+  --paper-warm:#f5e0c0;
+  /* deep teal — primary */
+  --teal-deep:#0a3f3f;
+  --teal:#0e5a5a;
+  --teal-bright:#147878;
+  --teal-glow:#1d9999;
+  /* gold — gilding */
+  --gold-deep:#7a5a14;
+  --gold:#b88a1c;
+  --gold-rich:#d4a635;
+  --gold-bright:#ecc756;
+  --gold-pale:#f4dd8b;
+  --gold-cream:#fbecaf;
+  /* coral / vermillion — warm accents */
+  --coral-deep:#9a2e22;
+  --coral:#c64336;
+  --coral-bright:#e86a59;
+  --blush:#e8b4a4;
+  /* aubergine — text depth */
+  --aubergine:#3a1d3e;
+  --aubergine-deep:#22112a;
+  --ink:#2a1530;
+  /* night background */
+  --night-1:#0d152e;
+  --night-2:#070b1c;
+  --night-3:#03050d;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  min-height:100vh;
+  width:100%;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%,rgba(212,166,53,.14) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 50% at 15% 100%,rgba(20,120,120,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 50% at 85% 100%,rgba(198,67,54,.14) 0%,transparent 60%),
+    radial-gradient(ellipse at center,var(--night-1) 0%,var(--night-2) 60%,var(--night-3) 100%);
+  font-family:'Noto Serif Georgian',Georgia,serif;
+  color:var(--ink);
+  overflow-x:hidden;
+}
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+  position:relative;
+  min-height:100vh;
+}
+
+/* atmospheric gold halo behind certificate */
+.glow{
+  position:fixed;
+  top:50%;left:50%;
+  width:90vmin;height:90vmin;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(236,199,86,.16) 0%,rgba(212,166,53,.08) 30%,transparent 65%);
+  filter:blur(40px);
+  pointer-events:none;
+  z-index:0;
+  animation:halo 5s ease-in-out infinite;
+}
+@keyframes halo{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.85}
+  50%{transform:translate(-50%,-50%) scale(1.1);opacity:1}
+}
+
+/* particle layers */
+.confetti-layer,.sparkle-layer{
+  position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden;
+}
+.confetti{position:absolute;top:-30px;opacity:0;will-change:transform,opacity}
+@keyframes fall{
+  0%{transform:translate3d(0,-10vh,0) rotate(0);opacity:0}
+  8%{opacity:1}
+  100%{transform:translate3d(var(--dx),115vh,0) rotate(var(--rot));opacity:.92}
+}
+@keyframes burst{
+  0%{transform:translate3d(0,0,0) rotate(0);opacity:1}
+  100%{transform:translate3d(var(--dx),var(--dy),0) rotate(var(--rot));opacity:0}
+}
+.sparkle{
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+  animation:twinkle var(--dur,2s) ease-in-out infinite;
+}
+@keyframes twinkle{
+  0%,100%{opacity:0;transform:scale(.3)}
+  50%{opacity:.95;transform:scale(1.4)}
+}
+
+/* stage — fluidly fills viewport while keeping A4 landscape ratio */
+.stage{
+  position:relative;
+  width:100%;
+  /* certificate is widest of: 100% body content, or vertical-constrained width via aspect ratio */
+  max-width:min(100%, calc((100vh - 28px) * 1.414));
+  z-index:5;
+}
+
+/* certificate */
+.certificate{
+  position:relative;
+  container-type:inline-size;
+  container-name:cert;
+  background:
+    radial-gradient(ellipse at 50% 50%,var(--paper-1) 0%,var(--paper-warm) 60%,var(--paper-2) 100%);
+  padding:clamp(20px,6cqi,90px) clamp(18px,7cqi,100px);
+  aspect-ratio:1.414/1;
+  box-shadow:
+    inset 0 0 100px rgba(122,90,20,.08),
+    inset 0 0 0 1px rgba(122,90,20,.15),
+    0 30px 80px -20px rgba(0,0,0,.75),
+    0 0 90px rgba(212,166,53,.18);
+  border-radius:3px;
+  transform:translateY(60px) scale(.95);
+  opacity:0;
+  animation:rise 1.4s cubic-bezier(.2,.7,.2,1) .2s forwards;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  overflow:hidden;
+}
+@keyframes rise{to{transform:translateY(0) scale(1);opacity:1}}
+@keyframes riseSimple{
+  from{transform:translateY(20px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+
+/* parchment grain */
+.certificate::before{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(40deg,transparent 0 4px,rgba(122,90,20,.018) 4px 5px),
+    radial-gradient(ellipse at 25% 30%,transparent 0,rgba(122,90,20,.04) 100%);
+  pointer-events:none;
+  mix-blend-mode:multiply;
+}
+
+/* damask watermark */
+.watermark{
+  position:absolute;inset:0;
+  pointer-events:none;
+  opacity:.06;
+  background-image:
+    radial-gradient(circle at 25% 25%,var(--teal-deep) 0,transparent 1.5px),
+    radial-gradient(circle at 75% 75%,var(--teal-deep) 0,transparent 1.5px),
+    radial-gradient(circle at 75% 25%,var(--coral-deep) 0,transparent 1px),
+    radial-gradient(circle at 25% 75%,var(--coral-deep) 0,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* gold shimmer */
+.shimmer{
+  position:absolute;inset:0;
+  background:linear-gradient(110deg,
+    transparent 35%,
+    rgba(244,221,139,.45) 47%,
+    rgba(255,250,220,.7) 50%,
+    rgba(244,221,139,.45) 53%,
+    transparent 65%);
+  mix-blend-mode:overlay;
+  transform:translateX(-100%);
+  animation:sweep 6s ease-in-out 2s infinite;
+  pointer-events:none;
+}
+@keyframes sweep{
+  0%{transform:translateX(-100%)}
+  60%,100%{transform:translateX(100%)}
+}
+
+/* layered ornate frame */
+.frame-outer{
+  position:absolute;
+  inset:clamp(7px,2cqi,28px);
+  border:3px solid var(--teal-deep);
+  pointer-events:none;
+  border-radius:1px;
+}
+.frame-mid{
+  position:absolute;
+  inset:clamp(13px,3cqi,40px);
+  border:1.5px solid var(--gold-rich);
+  pointer-events:none;
+}
+.frame-inner{
+  position:absolute;
+  inset:clamp(18px,3.7cqi,48px);
+  border:.5px solid var(--gold);
+  pointer-events:none;
+  opacity:.6;
+}
+
+/* corner medallions */
+.corner{
+  position:absolute;
+  width:clamp(48px,10cqi,200px);
+  height:clamp(48px,10cqi,200px);
+  pointer-events:none;
+  z-index:3;
+}
+.corner.tl{top:clamp(7px,2cqi,28px);left:clamp(7px,2cqi,28px)}
+.corner.tr{top:clamp(7px,2cqi,28px);right:clamp(7px,2cqi,28px);transform:scaleX(-1)}
+.corner.bl{bottom:clamp(7px,2cqi,28px);left:clamp(7px,2cqi,28px);transform:scaleY(-1)}
+.corner.br{bottom:clamp(7px,2cqi,28px);right:clamp(7px,2cqi,28px);transform:scale(-1,-1)}
+
+/* edge medallions (top/bottom center) */
+.edge-medallion{
+  position:absolute;
+  left:50%;transform:translateX(-50%);
+  width:clamp(55px,8cqi,100px);
+  height:clamp(18px,2.5cqi,32px);
+  pointer-events:none;
+  z-index:3;
+}
+.edge-medallion.top{top:clamp(7px,1.6cqi,20px)}
+.edge-medallion.bottom{bottom:clamp(7px,1.6cqi,20px);transform:translateX(-50%) scaleY(-1)}
+
+/* content */
+.content{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:clamp(10px,2.2cqi,28px);
+  width:100%;
+  max-width:84cqi;
+}
+
+.eyebrow{
+  display:flex;align-items:center;gap:clamp(8px,1.6cqi,20px);
+  font-family:'Noto Sans Georgian',sans-serif;
+  font-size:clamp(9px,1.1cqi,14px);
+  letter-spacing:.5em;
+  color:var(--gold-deep);
+  text-transform:uppercase;
+  font-weight:600;
+  opacity:0;
+  animation:riseSimple .8s ease 1s forwards;
+}
+.eyebrow .line{width:clamp(24px,5cqi,70px);height:1px;background:linear-gradient(90deg,transparent,var(--gold-rich),transparent)}
+.eyebrow .lozenge{
+  width:clamp(5px,.55cqi,7px);height:clamp(5px,.55cqi,7px);
+  background:var(--coral);
+  transform:rotate(45deg);
+  box-shadow:0 0 6px rgba(198,67,54,.5);
+}
+
+h1{
+  font-family:'Noto Serif Georgian',serif;
+  font-weight:900;
+  font-size:clamp(30px,9cqi,180px);
+  letter-spacing:.005em;
+  line-height:1.25;
+  padding:.08em 0;
+  background:linear-gradient(180deg,
+    var(--gold-pale) 0%,
+    var(--gold-bright) 25%,
+    var(--gold-rich) 55%,
+    var(--gold) 75%,
+    var(--gold-deep) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 1px 0 rgba(122,90,20,.4)) drop-shadow(0 2px 4px rgba(122,90,20,.25));
+  opacity:0;
+  animation:rise 1s cubic-bezier(.2,.7,.2,1) .8s forwards;
+}
+
+/* divider with center medallion */
+.divider{
+  width:clamp(200px,42cqi,500px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(8px,1.5cqi,16px);
+  opacity:0;
+  animation:riseSimple .8s ease 1.05s forwards;
+}
+.divider .line{
+  flex:1;height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--gold-rich) 30%,var(--gold-rich) 70%,transparent);
+}
+.divider .center-svg{
+  width:clamp(22px,3.6cqi,44px);
+  height:clamp(22px,3.6cqi,44px);
+  flex-shrink:0;
+}
+
+.awarded{
+  font-family:'Noto Serif Georgian',serif;
+  font-style:italic;
+  font-size:clamp(14px,2.1cqi,38px);
+  color:var(--teal-deep);
+  font-weight:400;
+  letter-spacing:.05em;
+  opacity:0;
+  animation:riseSimple .8s ease 1.2s forwards;
+}
+
+.name-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(8px,2.5cqi,32px);
+  width:100%;
+  opacity:0;
+  animation:rise 1s cubic-bezier(.2,.7,.2,1) 1.4s forwards;
+  flex-wrap:nowrap;
+}
+.name-flourish{
+  width:clamp(22px,6cqi,76px);
+  height:clamp(14px,3cqi,40px);
+  flex-shrink:0;
+}
+.name-flourish.right{transform:scaleX(-1)}
+.name{
+  font-family:'Noto Serif Georgian',serif;
+  font-weight:700;
+  font-size:clamp(20px,5.4cqi,110px);
+  letter-spacing:.005em;
+  line-height:1.15;
+  padding:.05em 0;
+  color:var(--aubergine);
+  text-shadow:0 1px 0 rgba(58,29,62,.15);
+}
+
+.dot-divider{
+  display:flex;
+  gap:6px;
+  opacity:0;
+  animation:riseSimple .8s ease 1.6s forwards;
+}
+.dot-divider span{
+  width:5px;height:5px;
+  border-radius:50%;
+  background:var(--gold-rich);
+  box-shadow:0 0 4px rgba(212,166,53,.4);
+}
+.dot-divider span:nth-child(2){background:var(--coral);box-shadow:0 0 4px rgba(198,67,54,.4)}
+
+.reason{
+  font-family:'Noto Serif Georgian',serif;
+  font-size:clamp(13px,1.95cqi,32px);
+  line-height:1.6;
+  color:var(--aubergine);
+  max-width:62ch;
+  opacity:0;
+  animation:riseSimple .8s ease 1.8s forwards;
+  font-weight:400;
+  font-style:italic;
+  padding:0 clamp(6px,2cqi,24px);
+}
+
+/* seal with ribbons */
+.seal-wrap{
+  margin-top:clamp(4px,1.2cqi,14px);
+  opacity:0;
+  transform:scale(.2) rotate(-25deg);
+  animation:stamp .65s cubic-bezier(.2,2.4,.4,1) 2.3s forwards,
+            sealFloat 4s ease-in-out 3.1s infinite;
+  position:relative;
+}
+@keyframes stamp{
+  0%{opacity:0;transform:scale(.2) rotate(-25deg)}
+  60%{opacity:1;transform:scale(1.12) rotate(2deg)}
+  100%{opacity:1;transform:scale(1) rotate(0)}
+}
+@keyframes sealFloat{
+  0%,100%{filter:drop-shadow(0 6px 14px rgba(122,90,20,.5))}
+  50%{filter:drop-shadow(0 10px 22px rgba(212,166,53,.6))}
+}
+.seal{
+  width:clamp(100px,13cqi,260px);
+  height:clamp(100px,13cqi,260px);
+  display:block;
+}
+
+.date-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  width:100%;
+  gap:24px;
+  margin-top:clamp(6px,1.4cqi,18px);
+  opacity:0;
+  animation:riseSimple .8s ease 2.6s forwards;
+  font-family:'Noto Sans Georgian',sans-serif;
+  font-size:clamp(9px,1.15cqi,13px);
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  font-weight:600;
+}
+.date-row span{
+  padding-top:clamp(4px,.8cqi,10px);
+  min-width:clamp(110px,20cqi,200px);
+  white-space:nowrap;
+  border-top:1px solid var(--gold-rich);
+  color:var(--teal-deep);
+}
+
+.hint{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  font-family:'Noto Sans Georgian',sans-serif;
+  font-size:10px;letter-spacing:.32em;text-transform:uppercase;
+  z-index:100;
+  opacity:0;
+  pointer-events:none;
+  text-align:center;
+  padding:0 16px;
+  color:var(--gold-pale);
+  text-shadow:0 1px 6px rgba(0,0,0,.7);
+  animation:riseSimple .8s ease 3s forwards;
+  font-weight:600;
+}
+
+@media (max-aspect-ratio: 5/4){
+  .certificate{aspect-ratio:auto;min-height:calc(100vh - 60px)}
+}
+
+/* When certificate itself is narrow, simplify decoration */
+@container cert (max-width: 420px){
+  .name-flourish{display:none}
+  .edge-medallion{display:none}
+  .name-row{gap:0}
+  .divider{width:80%}
+}
+@container cert (max-width: 360px){
+  .corner{width:46px;height:46px}
+  .eyebrow{letter-spacing:.35em}
+  .date-row span{letter-spacing:.2em;min-width:0}
+}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="confetti-layer" id="confetti"></div>
+<div class="sparkle-layer" id="sparkles"></div>
+
+<div class="stage">
+  <div class="certificate" id="cert">
+    <div class="watermark"></div>
+    <div class="shimmer"></div>
+    <div class="frame-outer"></div>
+    <div class="frame-mid"></div>
+    <div class="frame-inner"></div>
+
+    <!-- Corner medallions: floral Persian style -->
+    <svg class="corner tl" viewBox="0 0 140 140" fill="none">
+      <!-- main floral medallion -->
+      <g>
+        <!-- outer flourish -->
+        <path d="M70 8 Q40 8 22 26 Q8 42 8 70" stroke="#0a3f3f" stroke-width="1.2" fill="none"/>
+        <path d="M70 14 Q42 14 28 30 Q14 44 14 70" stroke="#b88a1c" stroke-width="1" fill="none" opacity=".8"/>
+        <!-- diagonal floral spray -->
+        <path d="M16 16 Q36 22 38 38 Q44 56 56 56" stroke="#b88a1c" stroke-width="1" fill="none"/>
+        <!-- top petals -->
+        <path d="M44 8 Q42 18 50 22 Q58 18 56 8" fill="#c64336" opacity=".8"/>
+        <path d="M44 8 Q42 18 50 22 Q58 18 56 8" fill="none" stroke="#7a5a14" stroke-width=".5"/>
+        <circle cx="50" cy="14" r="2" fill="#d4a635"/>
+        <!-- left petals -->
+        <path d="M8 44 Q18 42 22 50 Q18 58 8 56" fill="#c64336" opacity=".8"/>
+        <path d="M8 44 Q18 42 22 50 Q18 58 8 56" fill="none" stroke="#7a5a14" stroke-width=".5"/>
+        <circle cx="14" cy="50" r="2" fill="#d4a635"/>
+        <!-- corner rosette -->
+        <g transform="translate(28,28)">
+          <circle r="7" fill="#0a3f3f"/>
+          <circle r="7" fill="none" stroke="#d4a635" stroke-width="1"/>
+          <circle r="3.5" fill="#d4a635"/>
+          <circle r="1.4" fill="#c64336"/>
+        </g>
+        <!-- diagonal teardrop leaves -->
+        <path d="M40 28 Q52 32 54 44 Q46 44 42 38 Q38 34 40 28 Z" fill="#0e5a5a" opacity=".85"/>
+        <path d="M28 40 Q32 52 44 54 Q44 46 38 42 Q34 38 28 40 Z" fill="#0e5a5a" opacity=".85"/>
+        <!-- gold dots along spray -->
+        <circle cx="46" cy="46" r="1.6" fill="#d4a635"/>
+        <circle cx="38" cy="38" r="1.4" fill="#ecc756"/>
+        <!-- inner medallion at end -->
+        <g transform="translate(60,60)">
+          <path d="M-8 0 Q-4 -8 0 -8 Q4 -8 8 0 Q4 8 0 8 Q-4 8 -8 0 Z" fill="#c64336"/>
+          <path d="M-6 0 Q-3 -6 0 -6 Q3 -6 6 0 Q3 6 0 6 Q-3 6 -6 0 Z" fill="#d4a635"/>
+          <circle r="2" fill="#0a3f3f"/>
+        </g>
+        <!-- small gold accent dots scattered -->
+        <circle cx="22" cy="42" r="1" fill="#d4a635"/>
+        <circle cx="42" cy="22" r="1" fill="#d4a635"/>
+        <circle cx="52" cy="38" r="1" fill="#ecc756"/>
+        <circle cx="38" cy="52" r="1" fill="#ecc756"/>
+      </g>
+    </svg>
+    <svg class="corner tr" viewBox="0 0 140 140" fill="none">
+      <g>
+        <path d="M70 8 Q40 8 22 26 Q8 42 8 70" stroke="#0a3f3f" stroke-width="1.2" fill="none"/>
+        <path d="M70 14 Q42 14 28 30 Q14 44 14 70" stroke="#b88a1c" stroke-width="1" fill="none" opacity=".8"/>
+        <path d="M16 16 Q36 22 38 38 Q44 56 56 56" stroke="#b88a1c" stroke-width="1" fill="none"/>
+        <path d="M44 8 Q42 18 50 22 Q58 18 56 8" fill="#c64336" opacity=".8"/>
+        <path d="M44 8 Q42 18 50 22 Q58 18 56 8" fill="none" stroke="#7a5a14" stroke-width=".5"/>
+        <circle cx="50" cy="14" r="2" fill="#d4a635"/>
+        <path d="M8 44 Q18 42 22 50 Q18 58 8 56" fill="#c64336" opacity=".8"/>
+        <path d="M8 44 Q18 42 22 50 Q18 58 8 56" fill="none" stroke="#7a5a14" stroke-width=".5"/>
+        <circle cx="14" cy="50" r="2" fill="#d4a635"/>
+        <g transform="translate(28,28)">
+          <circle r="7" fill="#0a3f3f"/>
+          <circle r="7" fill="none" stroke="#d4a635" stroke-width="1"/>
+          <circle r="3.5" fill="#d4a635"/>
+          <circle r="1.4" fill="#c64336"/>
+        </g>
+        <path d="M40 28 Q52 32 54 44 Q46 44 42 38 Q38 34 40 28 Z" fill="#0e5a5a" opacity=".85"/>
+        <path d="M28 40 Q32 52 44 54 Q44 46 38 42 Q34 38 28 40 Z" fill="#0e5a5a" opacity=".85"/>
+        <circle cx="46" cy="46" r="1.6" fill="#d4a635"/>
+        <circle cx="38" cy="38" r="1.4" fill="#ecc756"/>
+        <g transform="translate(60,60)">
+          <path d="M-8 0 Q-4 -8 0 -8 Q4 -8 8 0 Q4 8 0 8 Q-4 8 -8 0 Z" fill="#c64336"/>
+          <path d="M-6 0 Q-3 -6 0 -6 Q3 -6 6 0 Q3 6 0 6 Q-3 6 -6 0 Z" fill="#d4a635"/>
+          <circle r="2" fill="#0a3f3f"/>
+        </g>
+        <circle cx="22" cy="42" r="1" fill="#d4a635"/>
+        <circle cx="42" cy="22" r="1" fill="#d4a635"/>
+        <circle cx="52" cy="38" r="1" fill="#ecc756"/>
+        <circle cx="38" cy="52" r="1" fill="#ecc756"/>
+      </g>
+    </svg>
+    <svg class="corner bl" viewBox="0 0 140 140" fill="none">
+      <g>
+        <path d="M70 8 Q40 8 22 26 Q8 42 8 70" stroke="#0a3f3f" stroke-width="1.2" fill="none"/>
+        <path d="M70 14 Q42 14 28 30 Q14 44 14 70" stroke="#b88a1c" stroke-width="1" fill="none" opacity=".8"/>
+        <path d="M16 16 Q36 22 38 38 Q44 56 56 56" stroke="#b88a1c" stroke-width="1" fill="none"/>
+        <path d="M44 8 Q42 18 50 22 Q58 18 56 8" fill="#c64336" opacity=".8"/>
+        <path d="M44 8 Q42 18 50 22 Q58 18 56 8" fill="none" stroke="#7a5a14" stroke-width=".5"/>
+        <circle cx="50" cy="14" r="2" fill="#d4a635"/>
+        <path d="M8 44 Q18 42 22 50 Q18 58 8 56" fill="#c64336" opacity=".8"/>
+        <path d="M8 44 Q18 42 22 50 Q18 58 8 56" fill="none" stroke="#7a5a14" stroke-width=".5"/>
+        <circle cx="14" cy="50" r="2" fill="#d4a635"/>
+        <g transform="translate(28,28)">
+          <circle r="7" fill="#0a3f3f"/>
+          <circle r="7" fill="none" stroke="#d4a635" stroke-width="1"/>
+          <circle r="3.5" fill="#d4a635"/>
+          <circle r="1.4" fill="#c64336"/>
+        </g>
+        <path d="M40 28 Q52 32 54 44 Q46 44 42 38 Q38 34 40 28 Z" fill="#0e5a5a" opacity=".85"/>
+        <path d="M28 40 Q32 52 44 54 Q44 46 38 42 Q34 38 28 40 Z" fill="#0e5a5a" opacity=".85"/>
+        <circle cx="46" cy="46" r="1.6" fill="#d4a635"/>
+        <circle cx="38" cy="38" r="1.4" fill="#ecc756"/>
+        <g transform="translate(60,60)">
+          <path d="M-8 0 Q-4 -8 0 -8 Q4 -8 8 0 Q4 8 0 8 Q-4 8 -8 0 Z" fill="#c64336"/>
+          <path d="M-6 0 Q-3 -6 0 -6 Q3 -6 6 0 Q3 6 0 6 Q-3 6 -6 0 Z" fill="#d4a635"/>
+          <circle r="2" fill="#0a3f3f"/>
+        </g>
+        <circle cx="22" cy="42" r="1" fill="#d4a635"/>
+        <circle cx="42" cy="22" r="1" fill="#d4a635"/>
+        <circle cx="52" cy="38" r="1" fill="#ecc756"/>
+        <circle cx="38" cy="52" r="1" fill="#ecc756"/>
+      </g>
+    </svg>
+    <svg class="corner br" viewBox="0 0 140 140" fill="none">
+      <g>
+        <path d="M70 8 Q40 8 22 26 Q8 42 8 70" stroke="#0a3f3f" stroke-width="1.2" fill="none"/>
+        <path d="M70 14 Q42 14 28 30 Q14 44 14 70" stroke="#b88a1c" stroke-width="1" fill="none" opacity=".8"/>
+        <path d="M16 16 Q36 22 38 38 Q44 56 56 56" stroke="#b88a1c" stroke-width="1" fill="none"/>
+        <path d="M44 8 Q42 18 50 22 Q58 18 56 8" fill="#c64336" opacity=".8"/>
+        <path d="M44 8 Q42 18 50 22 Q58 18 56 8" fill="none" stroke="#7a5a14" stroke-width=".5"/>
+        <circle cx="50" cy="14" r="2" fill="#d4a635"/>
+        <path d="M8 44 Q18 42 22 50 Q18 58 8 56" fill="#c64336" opacity=".8"/>
+        <path d="M8 44 Q18 42 22 50 Q18 58 8 56" fill="none" stroke="#7a5a14" stroke-width=".5"/>
+        <circle cx="14" cy="50" r="2" fill="#d4a635"/>
+        <g transform="translate(28,28)">
+          <circle r="7" fill="#0a3f3f"/>
+          <circle r="7" fill="none" stroke="#d4a635" stroke-width="1"/>
+          <circle r="3.5" fill="#d4a635"/>
+          <circle r="1.4" fill="#c64336"/>
+        </g>
+        <path d="M40 28 Q52 32 54 44 Q46 44 42 38 Q38 34 40 28 Z" fill="#0e5a5a" opacity=".85"/>
+        <path d="M28 40 Q32 52 44 54 Q44 46 38 42 Q34 38 28 40 Z" fill="#0e5a5a" opacity=".85"/>
+        <circle cx="46" cy="46" r="1.6" fill="#d4a635"/>
+        <circle cx="38" cy="38" r="1.4" fill="#ecc756"/>
+        <g transform="translate(60,60)">
+          <path d="M-8 0 Q-4 -8 0 -8 Q4 -8 8 0 Q4 8 0 8 Q-4 8 -8 0 Z" fill="#c64336"/>
+          <path d="M-6 0 Q-3 -6 0 -6 Q3 -6 6 0 Q3 6 0 6 Q-3 6 -6 0 Z" fill="#d4a635"/>
+          <circle r="2" fill="#0a3f3f"/>
+        </g>
+        <circle cx="22" cy="42" r="1" fill="#d4a635"/>
+        <circle cx="42" cy="22" r="1" fill="#d4a635"/>
+        <circle cx="52" cy="38" r="1" fill="#ecc756"/>
+        <circle cx="38" cy="52" r="1" fill="#ecc756"/>
+      </g>
+    </svg>
+
+    <!-- Top edge medallion -->
+    <svg class="edge-medallion top" viewBox="0 0 90 30" fill="none">
+      <line x1="0" y1="15" x2="32" y2="15" stroke="#b88a1c" stroke-width=".8"/>
+      <line x1="58" y1="15" x2="90" y2="15" stroke="#b88a1c" stroke-width=".8"/>
+      <path d="M32 15 Q38 8 45 8 Q52 8 58 15 Q52 22 45 22 Q38 22 32 15 Z" fill="#0a3f3f"/>
+      <path d="M32 15 Q38 8 45 8 Q52 8 58 15 Q52 22 45 22 Q38 22 32 15 Z" fill="none" stroke="#d4a635" stroke-width=".8"/>
+      <circle cx="45" cy="15" r="3" fill="#d4a635"/>
+      <circle cx="45" cy="15" r="1.2" fill="#c64336"/>
+      <circle cx="32" cy="15" r="1.5" fill="#c64336"/>
+      <circle cx="58" cy="15" r="1.5" fill="#c64336"/>
+    </svg>
+    <svg class="edge-medallion bottom" viewBox="0 0 90 30" fill="none">
+      <line x1="0" y1="15" x2="32" y2="15" stroke="#b88a1c" stroke-width=".8"/>
+      <line x1="58" y1="15" x2="90" y2="15" stroke="#b88a1c" stroke-width=".8"/>
+      <path d="M32 15 Q38 8 45 8 Q52 8 58 15 Q52 22 45 22 Q38 22 32 15 Z" fill="#0a3f3f"/>
+      <path d="M32 15 Q38 8 45 8 Q52 8 58 15 Q52 22 45 22 Q38 22 32 15 Z" fill="none" stroke="#d4a635" stroke-width=".8"/>
+      <circle cx="45" cy="15" r="3" fill="#d4a635"/>
+      <circle cx="45" cy="15" r="1.2" fill="#c64336"/>
+      <circle cx="32" cy="15" r="1.5" fill="#c64336"/>
+      <circle cx="58" cy="15" r="1.5" fill="#c64336"/>
+    </svg>
+
+    <div class="content">
+      <div class="eyebrow">
+        <span class="line"></span>
+        <span class="lozenge"></span>
+        <span>ANNO MMXXVI</span>
+        <span class="lozenge"></span>
+        <span class="line"></span>
+      </div>
+
+      <h1>სერტიფიკატი</h1>
+
+      <!-- Divider with central floral medallion -->
+      <div class="divider">
+        <span class="line"></span>
+        <svg class="center-svg" viewBox="0 0 40 40">
+          <g transform="translate(20,20)">
+            <!-- 8-pointed star/florette -->
+            <g>
+              <path d="M0 -16 L3 -3 L16 0 L3 3 L0 16 L-3 3 L-16 0 L-3 -3 Z" fill="#d4a635"/>
+              <path d="M11 -11 L3 -1 L1 -3 Z M-11 -11 L-3 -1 L-1 -3 Z M11 11 L3 1 L1 3 Z M-11 11 L-3 1 L-1 3 Z" fill="#b88a1c"/>
+            </g>
+            <circle r="6" fill="#0a3f3f"/>
+            <circle r="6" fill="none" stroke="#d4a635" stroke-width=".8"/>
+            <circle r="2.5" fill="#c64336"/>
+            <circle r=".8" fill="#f4dd8b"/>
+          </g>
+        </svg>
+        <span class="line"></span>
+      </div>
+
+      <p class="awarded">გადაეცემა,</p>
+
+      <!-- Name with paisley flourishes -->
+      <div class="name-row">
+        <svg class="name-flourish left" viewBox="0 0 70 38" fill="none">
+          <path d="M2 19 Q14 19 22 13 Q32 8 38 19 Q44 30 54 25 Q60 22 66 19" stroke="#b88a1c" stroke-width="1.2" fill="none"/>
+          <path d="M22 13 Q26 8 32 10" stroke="#0e5a5a" stroke-width="1" fill="none"/>
+          <path d="M44 30 Q40 35 34 33" stroke="#0e5a5a" stroke-width="1" fill="none"/>
+          <!-- paisley drop -->
+          <path d="M54 14 Q66 10 64 22 Q62 28 56 24 Q52 20 54 14 Z" fill="#c64336" opacity=".9"/>
+          <path d="M54 14 Q66 10 64 22 Q62 28 56 24 Q52 20 54 14 Z" fill="none" stroke="#7a5a14" stroke-width=".4"/>
+          <circle cx="60" cy="18" r="1.6" fill="#d4a635"/>
+          <circle cx="14" cy="19" r="1.8" fill="#0e5a5a"/>
+          <circle cx="14" cy="19" r=".8" fill="#d4a635"/>
+        </svg>
+        <p class="name">შორენა ფანცულაიას</p>
+        <svg class="name-flourish right" viewBox="0 0 70 38" fill="none">
+          <path d="M2 19 Q14 19 22 13 Q32 8 38 19 Q44 30 54 25 Q60 22 66 19" stroke="#b88a1c" stroke-width="1.2" fill="none"/>
+          <path d="M22 13 Q26 8 32 10" stroke="#0e5a5a" stroke-width="1" fill="none"/>
+          <path d="M44 30 Q40 35 34 33" stroke="#0e5a5a" stroke-width="1" fill="none"/>
+          <path d="M54 14 Q66 10 64 22 Q62 28 56 24 Q52 20 54 14 Z" fill="#c64336" opacity=".9"/>
+          <path d="M54 14 Q66 10 64 22 Q62 28 56 24 Q52 20 54 14 Z" fill="none" stroke="#7a5a14" stroke-width=".4"/>
+          <circle cx="60" cy="18" r="1.6" fill="#d4a635"/>
+          <circle cx="14" cy="19" r="1.8" fill="#0e5a5a"/>
+          <circle cx="14" cy="19" r=".8" fill="#d4a635"/>
+        </svg>
+      </div>
+
+      <div class="dot-divider"><span></span><span></span><span></span></div>
+
+      <p class="reason">მასზედ რომ გახდა პირველი ბიცოლა ვინც კი რობოტს ოდესმე ჰყოლია</p>
+
+      <div class="seal-wrap">
+        <svg class="seal" viewBox="0 0 220 220">
+          <defs>
+            <radialGradient id="goldRadial" cx="35%" cy="30%">
+              <stop offset="0%" stop-color="#fbecaf"/>
+              <stop offset="35%" stop-color="#ecc756"/>
+              <stop offset="70%" stop-color="#d4a635"/>
+              <stop offset="100%" stop-color="#7a5a14"/>
+            </radialGradient>
+            <radialGradient id="centerRadial" cx="35%" cy="30%">
+              <stop offset="0%" stop-color="#147878"/>
+              <stop offset="60%" stop-color="#0a3f3f"/>
+              <stop offset="100%" stop-color="#052222"/>
+            </radialGradient>
+          </defs>
+          <g transform="translate(110,110)">
+            <!-- coral ribbon tails -->
+            <path d="M-50 50 L-78 100 L-62 92 L-58 106 L-32 64 Z" fill="#9a2e22"/>
+            <path d="M50 50 L78 100 L62 92 L58 106 L32 64 Z" fill="#9a2e22"/>
+            <path d="M-50 50 L-78 100 L-62 92 L-58 106 L-32 64 Z" fill="#c64336" opacity=".8"/>
+            <path d="M50 50 L78 100 L62 92 L58 106 L32 64 Z" fill="#c64336" opacity=".8"/>
+            <!-- ribbon highlights -->
+            <path d="M-44 48 L-66 88" stroke="#e86a59" stroke-width="1" opacity=".6"/>
+            <path d="M44 48 L66 88" stroke="#e86a59" stroke-width="1" opacity=".6"/>
+
+            <!-- gold scalloped outer edge -->
+            <g>
+              <circle r="86" fill="url(#goldRadial)"/>
+              <!-- 16 scallops around the edge -->
+              <g>
+                <circle cx="0" cy="-86" r="8" fill="url(#goldRadial)"/>
+                <circle cx="33" cy="-79" r="8" fill="url(#goldRadial)"/>
+                <circle cx="61" cy="-61" r="8" fill="url(#goldRadial)"/>
+                <circle cx="79" cy="-33" r="8" fill="url(#goldRadial)"/>
+                <circle cx="86" cy="0" r="8" fill="url(#goldRadial)"/>
+                <circle cx="79" cy="33" r="8" fill="url(#goldRadial)"/>
+                <circle cx="61" cy="61" r="8" fill="url(#goldRadial)"/>
+                <circle cx="33" cy="79" r="8" fill="url(#goldRadial)"/>
+                <circle cx="0" cy="86" r="8" fill="url(#goldRadial)"/>
+                <circle cx="-33" cy="79" r="8" fill="url(#goldRadial)"/>
+                <circle cx="-61" cy="61" r="8" fill="url(#goldRadial)"/>
+                <circle cx="-79" cy="33" r="8" fill="url(#goldRadial)"/>
+                <circle cx="-86" cy="0" r="8" fill="url(#goldRadial)"/>
+                <circle cx="-79" cy="-33" r="8" fill="url(#goldRadial)"/>
+                <circle cx="-61" cy="-61" r="8" fill="url(#goldRadial)"/>
+                <circle cx="-33" cy="-79" r="8" fill="url(#goldRadial)"/>
+              </g>
+            </g>
+
+            <!-- inner gold ring with engravings -->
+            <circle r="76" fill="#d4a635"/>
+            <circle r="76" fill="none" stroke="#7a5a14" stroke-width="1"/>
+            <circle r="68" fill="none" stroke="#7a5a14" stroke-width=".5" stroke-dasharray="1,2.5"/>
+
+            <!-- center medallion -->
+            <circle r="58" fill="url(#centerRadial)"/>
+            <circle r="58" fill="none" stroke="#d4a635" stroke-width="1.5"/>
+            <circle r="52" fill="none" stroke="#ecc756" stroke-width=".5" opacity=".8"/>
+
+            <!-- inner 8-pointed star background -->
+            <g opacity=".25">
+              <path d="M0 -46 L8 -8 L46 0 L8 8 L0 46 L-8 8 L-46 0 L-8 -8 Z" fill="#ecc756"/>
+            </g>
+
+            <!-- monogram -->
+            <text y="0" text-anchor="middle" fill="#f4dd8b" font-family="Noto Serif Georgian" font-weight="800" font-size="28" letter-spacing="2">შ.ფ.</text>
+
+            <!-- delicate divider lines -->
+            <line x1="-22" y1="10" x2="22" y2="10" stroke="#d4a635" stroke-width=".8"/>
+            <circle cx="0" cy="10" r="1.4" fill="#c64336"/>
+
+            <!-- subtitle -->
+            <text y="22" text-anchor="middle" fill="#ecc756" font-family="Noto Sans Georgian" font-weight="600" font-size="6.5" letter-spacing="1.6">PRIMA · MMXXVI</text>
+            <text y="32" text-anchor="middle" fill="#d4a635" font-family="Noto Sans Georgian" font-weight="500" font-size="5.5" letter-spacing="1.6" opacity=".95">ROBOT · CUSTOS</text>
+
+            <!-- four floret accents around monogram -->
+            <g>
+              <circle cx="0" cy="-32" r="2.2" fill="#c64336"/>
+              <circle cx="0" cy="-32" r=".8" fill="#f4dd8b"/>
+              <circle cx="-32" cy="-12" r="1.6" fill="#d4a635"/>
+              <circle cx="32" cy="-12" r="1.6" fill="#d4a635"/>
+              <circle cx="-30" cy="32" r="1.6" fill="#d4a635"/>
+              <circle cx="30" cy="32" r="1.6" fill="#d4a635"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="date-row">
+        <span>თბილისი · 2026</span>
+        <span>ხელმოწერა · ATOM</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hint">დააჭირე ნებისმიერ ადგილას</div>
+
+<script>
+const confettiLayer=document.getElementById('confetti');
+const sparkleLayer=document.getElementById('sparkles');
+
+// Refined palette: gold tones, deep teal, coral, cream
+const colors=[
+  '#d4a635','#ecc756','#f4dd8b','#fbecaf', // golds
+  '#0a3f3f','#0e5a5a','#147878',            // teals
+  '#c64336','#9a2e22','#e86a59',            // corals
+  '#f7ead0','#fdf6e3'                       // creams
+];
+const sparkleColors=['#ecc756','#f4dd8b','#fbecaf','#e86a59','#1d9999'];
+const shapes=['rect','circ','strip'];
+
+function makeConfettiPiece(){
+  const c=document.createElement('div');
+  c.className='confetti';
+  const color=colors[Math.floor(Math.random()*colors.length)];
+  const shape=shapes[Math.floor(Math.random()*shapes.length)];
+  const w=5+Math.random()*10;
+  const h=8+Math.random()*14;
+  if(shape==='rect'){
+    c.style.width=w+'px';c.style.height=h+'px';c.style.background=color;
+  }else if(shape==='circ'){
+    c.style.width=w+'px';c.style.height=w+'px';c.style.background=color;c.style.borderRadius='50%';
+  }else{
+    c.style.width=(w*1.4)+'px';c.style.height='2.5px';c.style.background=color;c.style.borderRadius='2px';
+  }
+  c.style.boxShadow='0 0 4px '+color+'80, 0 1px 2px rgba(0,0,0,.2)';
+  return c;
+}
+
+function rainConfetti(count){
+  for(let i=0;i<count;i++){
+    const c=makeConfettiPiece();
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top='-30px';
+    const dx=((Math.random()-0.5)*60)+'vw';
+    const rot=(Math.random()*1440-720)+'deg';
+    const dur=(3.8+Math.random()*4.5)+'s';
+    const delay=(Math.random()*0.6)+'s';
+    c.style.setProperty('--dx',dx);
+    c.style.setProperty('--rot',rot);
+    c.style.animation=`fall ${dur} cubic-bezier(.2,.6,.4,1) ${delay} forwards`;
+    confettiLayer.appendChild(c);
+    setTimeout(()=>c.remove(),(parseFloat(dur)+parseFloat(delay))*1000+200);
+  }
+}
+
+function burstConfetti(x,y,count){
+  for(let i=0;i<count;i++){
+    const c=makeConfettiPiece();
+    c.style.left=x+'px';
+    c.style.top=y+'px';
+    const angle=Math.random()*Math.PI*2;
+    const power=140+Math.random()*340;
+    const dx=Math.cos(angle)*power+'px';
+    const dy=(Math.sin(angle)*power+Math.random()*220)+'px';
+    const rot=(Math.random()*1080-540)+'deg';
+    const dur=(1.3+Math.random()*1.5)+'s';
+    c.style.setProperty('--dx',dx);
+    c.style.setProperty('--dy',dy);
+    c.style.setProperty('--rot',rot);
+    c.style.opacity='1';
+    c.style.animation=`burst ${dur} cubic-bezier(.15,.6,.4,1) forwards`;
+    confettiLayer.appendChild(c);
+    setTimeout(()=>c.remove(),parseFloat(dur)*1000+200);
+  }
+}
+
+rainConfetti(140);
+setTimeout(()=>rainConfetti(70),1000);
+setInterval(()=>rainConfetti(6),750);
+
+function addSparkle(){
+  const s=document.createElement('div');
+  s.className='sparkle';
+  const size=4+Math.random()*8;
+  s.style.width=size+'px';
+  s.style.height=size+'px';
+  s.style.left=(Math.random()*100)+'vw';
+  s.style.top=(Math.random()*100)+'vh';
+  s.style.setProperty('--dur',(1.6+Math.random()*2.4)+'s');
+  const c=sparkleColors[Math.floor(Math.random()*sparkleColors.length)];
+  s.style.background=`radial-gradient(circle,#fff 0%,${c} 50%,transparent 75%)`;
+  s.style.filter=`drop-shadow(0 0 6px ${c})`;
+  sparkleLayer.appendChild(s);
+  setTimeout(()=>s.remove(),3800);
+}
+for(let i=0;i<32;i++)setTimeout(addSparkle,i*120);
+setInterval(addSparkle,260);
+
+setTimeout(()=>{
+  const cert=document.getElementById('cert');
+  const r=cert.getBoundingClientRect();
+  burstConfetti(r.left+r.width/2,r.top+r.height*0.7,100);
+},2450);
+
+function handlePoint(x,y){burstConfetti(x,y,75)}
+document.addEventListener('click',e=>handlePoint(e.clientX,e.clientY));
+document.addEventListener('touchstart',e=>{
+  const t=e.touches[0];
+  if(t)handlePoint(t.clientX,t.clientY);
+},{passive:true});
+</script>
+</body>
+</html>
